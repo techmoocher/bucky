@@ -1,19 +1,39 @@
-# Save the Bucky
+# Save the Bucky — Webpage Edition
 
-This is the full webpage version of **Save the Bucky**, an offline survival
-game set on the Bucknell University quad. The Standardizer, a rogue AI, is
-replacing curiosity and independent thought with obedient machines. Defend the
-quad, defeat the robots, collect knowledge, and restore every university major.
+This branch contains the webpage edition of **Save the Bucky**, an offline
+survival game set on the Bucknell University quad. The Standardizer, a rogue
+AI, is replacing curiosity and independent thought with obedient machines.
+Defend the quad, defeat the robots, collect knowledge, and restore every
+university major.
 
 ## Run the game
 
-No server, package manager, build step, or network connection is required.
+Open [`index.html`](index.html) in a modern browser. It runs directly from
+`file://`; no server, installation, package manager, build step, or network
+connection is required.
 
-1. Open [`index.html`](index.html) in a modern browser.
-2. If you want to run the standalone submission instead, open
-   [`main.html`](main.html).
+This edition separates the page structure, styles, and game logic to make
+future maintenance easier:
 
-The game works directly from `file://`.
+```text
+.
+├── index.html          # Webpage entry point
+├── scripts/
+│   └── game.js         # Game behavior and data
+├── styles/
+│   └── main.css        # Webpage styles
+├── LICENSE             # MIT License shared by both branches
+└── README.md           # Documentation for this webpage branch
+```
+
+Keep `index.html`, `scripts/`, and `styles/` together when copying or
+deploying this edition. The project has no external assets, libraries, fonts,
+or services.
+
+The one-file standalone edition is maintained on the
+[`main` branch](https://github.com/techmoocher/bucky/tree/main). Open
+[`main.html`](https://github.com/techmoocher/bucky/blob/main/main.html) there
+when you need a self-contained copy.
 
 ## Controls
 
@@ -25,26 +45,6 @@ The game works directly from `file://`.
 
 The game also includes independent music and sound controls, reduced-motion
 settings, progress export/import, and a reset option.
-
-## Repository layout
-
-```text
-.
-├── index.html          # Main webpage entry point
-├── main.html           # Self-contained standalone game entry point
-├── scripts/
-│   └── game.js         # Shared game logic
-├── styles/
-│   └── main.css        # Shared webpage styles
-├── docs/
-│   └── GAME_SPEC.md    # Development specification, when included locally
-├── LICENSE             # MIT License
-└── README.md           # Documentation for this webpage branch
-```
-
-The runtime has no external assets, libraries, fonts, or services. Keep
-`index.html`, `scripts/`, and `styles/` together when moving or deploying the
-webpage version.
 
 ## Progression
 
