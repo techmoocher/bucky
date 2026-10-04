@@ -132,6 +132,8 @@ const freshProgress = () => ({
   settings: {
     muted: false,
     music: true,
+    musicVolume: 0.7,
+    sfxVolume: 1,
     sidebarHidden: matchMedia('(max-width:760px)').matches,
     reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches,
   },
@@ -216,6 +218,16 @@ function validateSave(data) {
     ) {
       throw new Error('The save contains invalid settings.');
     }
+    for (const key of ['musicVolume', 'sfxVolume']) {
+      if (
+        data.settings[key] !== undefined &&
+        (!Number.isFinite(data.settings[key]) ||
+          data.settings[key] < 0 ||
+          data.settings[key] > 1)
+      ) {
+        throw new Error('The save contains invalid audio settings.');
+      }
+    }
   }
   const mastery = {};
   if (data.mastery !== undefined) {
@@ -261,6 +273,8 @@ function validateSave(data) {
     settings: {
       muted: data.settings.muted,
       music: data.settings.music ?? true,
+      musicVolume: data.settings.musicVolume ?? 0.7,
+      sfxVolume: data.settings.sfxVolume ?? 1,
       sidebarHidden:
         data.settings.sidebarHidden ?? matchMedia('(max-width:760px)').matches,
       reducedMotion: data.settings.reducedMotion,
@@ -424,6 +438,12 @@ function applySettings() {
   );
   if (progress.settings.reducedMotion) stopCelebration();
   $('motion-setting').checked = progress.settings.reducedMotion;
+  for (const id of ['pause-music-volume', 'panel-music-volume']) {
+    $(id).value = String(Math.round(progress.settings.musicVolume * 100));
+  }
+  for (const id of ['pause-sfx-volume', 'panel-sfx-volume']) {
+    $(id).value = String(Math.round(progress.settings.sfxVolume * 100));
+  }
   $('sound-label').textContent = progress.settings.muted
     ? 'SOUND OFF'
     : 'SOUND ON';
@@ -433,11 +453,11 @@ function applySettings() {
   );
   $('sound-button').setAttribute(
     'aria-label',
-    progress.settings.muted ? 'Enable all sound' : 'Mute all sound',
+    progress.settings.muted ? 'Enable sound effects' : 'Mute sound effects',
   );
   $('sound-button').title = progress.settings.muted
-    ? 'Enable all sound (M)'
-    : 'Mute all sound (M)';
+    ? 'Enable sound effects (M)'
+    : 'Mute sound effects (M)';
   $('music-label').textContent = progress.settings.music
     ? 'MUSIC ON'
     : 'MUSIC OFF';
@@ -451,8 +471,7 @@ function applySettings() {
       ? 'Turn background music off'
       : 'Turn background music on',
   );
-  $('music-button').title = `Background music: ${progress.settings.music ? 'on' : 'off'}${progress.settings.muted ? ' (all sound muted)' : ''}`;
-  $('music-setting').checked = progress.settings.music;
+  $('music-button').title = `Background music: ${progress.settings.music ? 'on' : 'off'}`;
   const sidebarHidden = progress.settings.sidebarHidden;
   $('game-layout').classList.toggle('sidebar-hidden', sidebarHidden);
   $('sidebar-toggle').setAttribute(
@@ -468,6 +487,8 @@ function applySettings() {
     : 'Hide sidebar (H)';
   $('sidebar-label').textContent = sidebarHidden ? 'SHOW PANEL' : 'HIDE PANEL';
   Sound.setMute(progress.settings.muted);
+  Sound.setVolume(progress.settings.sfxVolume);
+  Music.setVolume(progress.settings.musicVolume);
   Music.sync();
   resizeCanvas();
 }
@@ -482,7 +503,9 @@ const Sound = {
         if (!AudioContext) return;
         this.context = new AudioContext();
         this.master = this.context.createGain();
-        this.master.gain.value = progress.settings.muted ? 0 : 0.19;
+        this.master.gain.value = progress.settings.muted
+          ? 0
+          : 0.19 * progress.settings.sfxVolume;
         this.master.connect(this.context.destination);
       }
       if (this.context.state === 'suspended') {
@@ -493,7 +516,16 @@ const Sound = {
   setMute(muted) {
     if (this.master) {
       this.master.gain.setTargetAtTime(
-        muted ? 0 : 0.19,
+        muted ? 0 : 0.19 * progress.settings.sfxVolume,
+        this.context.currentTime,
+        0.02,
+      );
+    }
+  },
+  setVolume(volume) {
+    if (this.master && !progress.settings.muted) {
+      this.master.gain.setTargetAtTime(
+        0.19 * volume,
         this.context.currentTime,
         0.02,
       );
@@ -574,6 +606,7 @@ const Sound = {
 const Music = {
   timer: null,
   bus: null,
+  master: null,
   noise: null,
   step: 0,
   next: 0,
@@ -582,7 +615,7 @@ const Music = {
     return (
       state === 'playing' &&
       progress.settings.music &&
-      !progress.settings.muted &&
+      progress.settings.musicVolume > 0 &&
       !document.hidden &&
       Sound.context?.state === 'running'
     );
@@ -594,6 +627,10 @@ const Music = {
     }
     if (this.timer !== null) return;
     const audioContext = Sound.context;
+    if (!this.master) {
+      this.master = audioContext.createGain();
+      this.master.connect(audioContext.destination);
+    }
     if (!this.noise) {
       this.noise = audioContext.createBuffer(
         1,
@@ -608,16 +645,25 @@ const Music = {
     this.bus = audioContext.createGain();
     this.bus.gain.setValueAtTime(0, audioContext.currentTime);
     this.bus.gain.linearRampToValueAtTime(
-      0.58,
+      0.58 * progress.settings.musicVolume,
       audioContext.currentTime + 0.15,
     );
-    this.bus.connect(Sound.master);
+    this.bus.connect(this.master);
     this.next = audioContext.currentTime + 0.04;
     this.schedule();
     this.timer = setInterval(() => {
       if (this.wanted()) this.schedule();
       else this.stop();
     }, 25);
+  },
+  setVolume(volume) {
+    if (this.bus) {
+      this.bus.gain.setTargetAtTime(
+        0.58 * volume,
+        Sound.context.currentTime,
+        0.02,
+      );
+    }
   },
   stop() {
     if (this.timer !== null) clearInterval(this.timer);
@@ -2259,7 +2305,6 @@ function toggleSidebar() {
   if (state === 'playing') canvas.focus({ preventScroll: true });
 }
 $('music-button').onclick = toggleMusic;
-$('music-setting').onchange = toggleMusic;
 $('sidebar-toggle').onclick = toggleSidebar;
 $('start-button').onclick = startRun;
 $('brief-start').onclick = startRun;
@@ -2267,7 +2312,6 @@ $('restart-button').onclick = startRun;
 $('sound-button').onclick = toggleSound;
 $('archive-button').onclick = openCollection;
 $('run-archive').onclick = openCollection;
-$('pause-archive').onclick = openCollection;
 $('close-collection').onclick = closeCollection;
 $('pause-button').onclick = pauseGame;
 $('top-pause').onclick = pauseGame;
@@ -2289,7 +2333,7 @@ $('award-button').onclick = () => {
   Sound.unlock();
   showVictory();
 };
-for (const id of ['export-home', 'export-pause', 'victory-export']) {
+for (const id of ['export-home', 'victory-export']) {
   $(id).onclick = exportProgress;
 }
 $('import-button').onclick = () => {
@@ -2317,6 +2361,20 @@ $('motion-setting').onchange = () => {
   applySettings();
   saveProgress();
 };
+for (const id of ['pause-music-volume', 'panel-music-volume']) {
+  $(id).oninput = (event) => {
+    progress.settings.musicVolume = Number(event.target.value) / 100;
+    applySettings();
+    saveProgress();
+  };
+}
+for (const id of ['pause-sfx-volume', 'panel-sfx-volume']) {
+  $(id).oninput = (event) => {
+    progress.settings.sfxVolume = Number(event.target.value) / 100;
+    applySettings();
+    saveProgress();
+  };
+}
 $('collection-search').oninput = renderCollection;
 $('collection-status').onchange = renderCollection;
 $('college-tabs').onclick = (event) => {

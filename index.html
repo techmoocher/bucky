@@ -80,7 +80,7 @@
       <span class="button-label" id="sidebar-label">HIDE PANEL</span>
     </button>
     <button class="icon-btn" id="top-pause" aria-label="Pause game" hidden>
-      Ⅱ
+      II
       <span class="button-label">
         PAUSE
       </span>
@@ -89,7 +89,7 @@
       <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 17V5l11-2v12M9 8l11-2"/><ellipse cx="6" cy="18" rx="3" ry="3"/><ellipse cx="17" cy="16" rx="3" ry="3"/></svg>
       <span class="button-label" id="music-label">MUSIC ON</span>
     </button>
-    <button class="icon-btn" id="sound-button" aria-label="Mute all sound" aria-pressed="false" title="Mute all sound (M)">
+    <button class="icon-btn" id="sound-button" aria-label="Mute sound effects" aria-pressed="false" title="Mute sound effects (M)">
       <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
         <path d="M11 4 6 8H3v8h3l5 4zM15 8q5 4 0 8m3-11q8 7 0 14"/>
       </svg>
@@ -405,7 +405,7 @@
       <div class="sidebar-archive">
         <div class="archive-preview-row">
           <span>
-            PERMANENT ARCHIVE
+            ACADEMIC PROGRESS REPORT (APR)
           </span>
           <span id="run-collection-count" class="orange">
             0 / 67
@@ -427,12 +427,23 @@
           ARCHIVE
         </button>
       </div>
+      <div class="audio-controls">
+        <span class="section-label">AUDIO</span>
+        <label class="settings-row" for="panel-music-volume">
+          Music
+          <input type="range" id="panel-music-volume" min="0" max="100" step="1" value="70">
+        </label>
+        <label class="settings-row" for="panel-sfx-volume">
+          SFX
+          <input type="range" id="panel-sfx-volume" min="0" max="100" step="1" value="100">
+        </label>
+      </div>
       <div class="sidebar-hint">
         WASD / ARROWS · MOVE
         <br>
         SPACE · DASH &nbsp; ESC · PAUSE
         <br>
-        M · ALL SOUND &nbsp; H · PANEL
+        M · SFX &nbsp; H · PANEL
       </div>
     </aside>
   </div>
@@ -567,27 +578,22 @@
       <button id="resume-button" class="button">
         BACK TO THE QUAD
       </button>
-      <button id="export-pause" class="button secondary">
-        ↓ EXPORT PROGRESS
-      </button>
-      <button id="pause-archive" class="button secondary">
-        EXPLORE THE ARCHIVE
+      <button id="end-run-button" class="button secondary">
+        END THIS RUN
       </button>
     </div>
     <label class="settings-row" for="motion-setting">
       Reduce motion & screen shake
       <input type="checkbox" id="motion-setting">
     </label>
-    <label class="settings-row" for="music-setting">
-      Background music
-      <input type="checkbox" id="music-setting" checked>
+    <label class="settings-row" for="pause-music-volume">
+      Music
+      <input type="range" id="pause-music-volume" min="0" max="100" step="1" value="70">
     </label>
-    <p class="collection-note">
-      Export saves your collection and records, not the active battle.
-    </p>
-    <button id="end-run-button" class="text-btn" style="margin-top:17px">
-      END RUN & KEEP DISCOVERIES →
-    </button>
+    <label class="settings-row" for="pause-sfx-volume">
+      SFX
+      <input type="range" id="pause-sfx-volume" min="0" max="100" step="1" value="100">
+    </label>
   </div>
 </dialog>
 <dialog id="result-dialog" class="result-dialog" aria-labelledby="result-title">
@@ -628,7 +634,7 @@
       </div>
     </div>
     <span class="section-label">
-      ADDED TO YOUR PERMANENT ARCHIVE
+      ADDED TO YOUR ACAEMIC PROGRESS REPORT
     </span>
     <div class="result-majors" id="result-majors">
     </div>

@@ -22,7 +22,34 @@ body  {
     font: 15px/1.55 var(--sans);
     min-height: 100vh;
 }
- a  {
+button,
+input,
+select  {
+    font: inherit;
+}
+button  {
+    cursor: pointer;
+    color: inherit;
+    border: 0;
+}
+button:disabled  {
+    cursor: default;
+    opacity: .5;
+}
+button,
+a,
+input,
+select  {
+    -webkit-tap-highlight-color: transparent;
+}
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible  {
+    outline: 2px solid var(--mint);
+    outline-offset: 5px;
+}
+a  {
     color: var(--mint);
 }
 [hidden]  {
@@ -1049,6 +1076,20 @@ dialog::backdrop {
     accent-color:var(--orange);
     width:16px;
     height:16px
+}
+.settings-row input[type="range"] {
+    width:140px;
+    height:4px;
+}
+.audio-controls {
+    margin-top:22px;
+}
+.audio-controls .section-label {
+    display:block;
+    margin-bottom:4px;
+}
+.audio-controls .settings-row {
+    padding:9px 0;
 }
 .result-dialog {
     width:620px
