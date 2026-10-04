@@ -1,18 +1,18 @@
 # Save the Bucky — Standalone Edition
 
-This branch contains the standalone submission of **Save the Bucky**, an
-offline survival game set on the Bucknell University quad. The Standardizer, a
-rogue AI, is replacing curiosity and independent thought with obedient
-machines. Defend the quad, defeat the robots, collect knowledge, and restore
-every university major.
+This branch contains the standalone edition of **Save the Bucky**, an offline
+survival game set on the Bucknell University quad. The Standardizer, a rogue
+AI, is replacing curiosity and independent thought with obedient machines.
+Defend the quad, defeat the robots, collect knowledge, and restore every
+university major.
 
 ## Run the game
 
-Open [`main.html`](main.html) in a modern browser. The game runs directly from
+Open [`main.html`](main.html) in a modern browser. It runs directly from
 `file://`; no server, installation, package manager, build step, or network
 connection is required.
 
-This branch intentionally keeps the playable game in one self-contained HTML
+This branch intentionally keeps the complete game in one self-contained HTML
 file so it can be submitted, copied, or archived easily.
 
 ## Controls
@@ -60,12 +60,12 @@ battle.
 ```text
 .
 ├── main.html    # Complete standalone game
-├── LICENSE      # MIT License
-└── README.md    # Documentation for this standalone branch
+├── LICENSE      # MIT License shared by both branches
+└── README.md    # Documentation for the standalone branch
 ```
 
-The full webpage version, including separate CSS and JavaScript files, is
-maintained on the [`webpage` branch](https://github.com/techmoocher/bucky/tree/webpage).
+The full webpage edition is maintained on the
+[`webpage` branch](https://github.com/techmoocher/bucky/tree/webpage).
 
 ## References
 
