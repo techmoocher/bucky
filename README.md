@@ -1,6 +1,6 @@
-# Save the Bucky — Webpage Edition
+# Save the Bucky — Standalone Edition
 
-This branch contains the webpage edition of **Save the Bucky**, an offline
+This branch contains the standalone edition of **Save the Bucky**, an offline
 survival game set on the Bucknell University quad. The Standardizer, a rogue
 AI, is replacing curiosity and independent thought with obedient machines.
 Defend the quad, defeat the robots, collect knowledge, and restore every
@@ -8,32 +8,12 @@ university major.
 
 ## Run the game
 
-Open [`index.html`](index.html) in a modern browser. It runs directly from
+Open [`main.html`](main.html) in a modern browser. It runs directly from
 `file://`; no server, installation, package manager, build step, or network
 connection is required.
 
-This edition separates the page structure, styles, and game logic to make
-future maintenance easier:
-
-```text
-.
-├── index.html          # Webpage entry point
-├── scripts/
-│   └── game.js         # Game behavior and data
-├── styles/
-│   └── main.css        # Webpage styles
-├── LICENSE             # MIT License shared by both branches
-└── README.md           # Documentation for this webpage branch
-```
-
-Keep `index.html`, `scripts/`, and `styles/` together when copying or
-deploying this edition. The project has no external assets, libraries, fonts,
-or services.
-
-The one-file standalone edition is maintained on the
-[`main` branch](https://github.com/techmoocher/bucky/tree/main). Open
-[`main.html`](https://github.com/techmoocher/bucky/blob/main/main.html) there
-when you need a self-contained copy.
+This branch intentionally keeps the complete game in one self-contained HTML
+file so it can be submitted, copied, or archived easily.
 
 ## Controls
 
@@ -74,6 +54,18 @@ effects, discovery state, and mastery filters.
 
 An exported save is a campaign snapshot. It does not resume an exact active
 battle.
+
+## Repository layout
+
+```text
+.
+├── main.html    # Complete standalone game
+├── LICENSE      # MIT License shared by both branches
+└── README.md    # Documentation for the standalone branch
+```
+
+The full webpage edition is maintained on the
+[`webpage` branch](https://github.com/techmoocher/bucky/tree/webpage).
 
 ## References
 
